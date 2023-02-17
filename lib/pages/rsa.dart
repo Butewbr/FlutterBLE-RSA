@@ -1,18 +1,43 @@
 import 'package:flutter/material.dart';
-// import 'package:rsa_encrypt/rsa_encrypt.dart';
-// import 'package:pointycastle/api.dart' as crypto;
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:pointycastle/export.dart' hide State, Padding;
 
-// //Future to hold our KeyPair
-// Future<crypto.AsymmetricKeyPair> futureKeyPair;
-
-// //to store the KeyPair once we get data from our future
-// crypto.AsymmetricKeyPair keyPair;
-
-// Future<crypto.AsymmetricKeyPair<crypto.PublicKey, crypto.PrivateKey>>
-//     getKeyPair() {
-//   var helper = RsaKeyHelper();
-//   return helper.computeRSAKeyPair(helper.getSecureRandom());
+// AsymmetricKeyPair<PublicKey, PrivateKey> generateRSAKeyPair(
+//     {int bitLength = 2048}) {
+//   final keyParams =
+//       RSAKeyGeneratorParameters(BigInt.from(65537), bitLength, 64);
+//   final secureRandom = SecureRandom('Fortuna');
+//   final keyGen = RSAKeyGenerator()
+//     ..init(ParametersWithRandom(keyParams, secureRandom));
+//   return keyGen.generateKeyPair();
 // }
+
+AsymmetricKeyPair<PublicKey, PrivateKey> generateKeyPair() {
+  final keyParams = RSAKeyGeneratorParameters(BigInt.from(65537), 2048, 64);
+  final secureRandom = FortunaRandom();
+  final random = Random.secure();
+  final seeds = <int>[];
+  for (var i = 0; i < 32; i++) {
+    seeds.add(random.nextInt(255));
+  }
+  secureRandom.seed(KeyParameter(Uint8List.fromList(seeds)));
+  final keyGenerator = RSAKeyGenerator();
+  keyGenerator.init(ParametersWithRandom(keyParams, secureRandom));
+  final keyPair = keyGenerator.generateKeyPair();
+  final publicKey = keyPair.publicKey as RSAPublicKey;
+  final privateKey = keyPair.privateKey as RSAPrivateKey;
+
+  return keyPair;
+}
+
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> getEmptyKeyPair() {
+  final emptyPublicKey = RSAPublicKey(BigInt.zero, BigInt.zero);
+  final emptyPrivateKey =
+      RSAPrivateKey(BigInt.zero, BigInt.zero, BigInt.zero, BigInt.zero);
+  return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(
+      emptyPublicKey, emptyPrivateKey);
+}
 
 class rsaGenPage extends StatefulWidget {
   const rsaGenPage({super.key});
@@ -22,6 +47,9 @@ class rsaGenPage extends StatefulWidget {
 }
 
 class rsaGenPageState extends State<rsaGenPage> {
+  final emptyKey = getEmptyKeyPair();
+  final userPair = generateKeyPair();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,8 +92,8 @@ class rsaGenPageState extends State<rsaGenPage> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                      Padding(
+                    children: [
+                      const Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                         child: Icon(
@@ -74,15 +102,25 @@ class rsaGenPageState extends State<rsaGenPage> {
                           size: 28,
                         ),
                       ),
-                      Text(
-                        "N/A",
-                        style: TextStyle(
-                          fontFamily: "Oxygen",
-                          fontSize: 16,
-                          letterSpacing: 1.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      userPair != emptyKey
+                          ? Text(
+                              "${userPair.privateKey}${userPair.privateKey}",
+                              style: const TextStyle(
+                                fontFamily: "Oxygen",
+                                fontSize: 16,
+                                letterSpacing: 1.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          : const Text(
+                              "N/A",
+                              style: TextStyle(
+                                fontFamily: "Oxygen",
+                                fontSize: 16,
+                                letterSpacing: 1.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
                     ],
                   ),
                   const Text(
@@ -96,8 +134,8 @@ class rsaGenPageState extends State<rsaGenPage> {
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: const [
-                      Padding(
+                    children: [
+                      const Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
                         child: Icon(
@@ -106,15 +144,25 @@ class rsaGenPageState extends State<rsaGenPage> {
                           size: 30,
                         ),
                       ),
-                      Text(
-                        "N/A",
-                        style: TextStyle(
-                          fontFamily: "Oxygen",
-                          fontSize: 16,
-                          letterSpacing: 1.0,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
+                      userPair != emptyKey
+                          ? Text(
+                              "${userPair.publicKey}${userPair.publicKey}",
+                              style: const TextStyle(
+                                fontFamily: "Oxygen",
+                                fontSize: 16,
+                                letterSpacing: 1.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          : const Text(
+                              "N/A",
+                              style: TextStyle(
+                                fontFamily: "Oxygen",
+                                fontSize: 16,
+                                letterSpacing: 1.0,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
                     ],
                   ),
                 ],
