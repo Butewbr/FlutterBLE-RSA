@@ -41,7 +41,8 @@ class _blePageState extends State<blePage> {
 
   scan() async {
     print(widget.lastScanned);
-    widget.lastScanned = DateFormat('yyyy-MM-dd H:m:s').format(DateTime.now());
+    widget.lastScanned =
+        DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
     print(widget.lastScanned);
     if (!_isScanning) {
       widget.scanResultList.clear();
@@ -136,7 +137,7 @@ class _blePageState extends State<blePage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('LabSEC machinery',
+        title: const Text('Check BLE Devices',
             style: TextStyle(
               fontFamily: "Poppins",
               fontWeight: FontWeight.bold,
