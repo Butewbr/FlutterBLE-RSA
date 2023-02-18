@@ -40,6 +40,7 @@ dependencies:
     flutter_spinkit: ^5.1.0
     rsa_encrypt: ^2.0.0
     pointycastle: ^3.6.2
+    path_provider: ^2.0.12
 
 dev_dependencies:
     flutter_test:

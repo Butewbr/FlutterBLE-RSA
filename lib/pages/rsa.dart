@@ -2,18 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart' hide State, Padding;
+import 'package:myapp/pages/seekey.dart';
 
-// AsymmetricKeyPair<PublicKey, PrivateKey> generateRSAKeyPair(
-//     {int bitLength = 2048}) {
-//   final keyParams =
-//       RSAKeyGeneratorParameters(BigInt.from(65537), bitLength, 64);
-//   final secureRandom = SecureRandom('Fortuna');
-//   final keyGen = RSAKeyGenerator()
-//     ..init(ParametersWithRandom(keyParams, secureRandom));
-//   return keyGen.generateKeyPair();
-// }
-
-AsymmetricKeyPair<PublicKey, PrivateKey> generateKeyPair() {
+AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> generateKeyPair() {
   final keyParams = RSAKeyGeneratorParameters(BigInt.from(65537), 2048, 64);
   final secureRandom = FortunaRandom();
   final random = Random.secure();
@@ -28,7 +19,7 @@ AsymmetricKeyPair<PublicKey, PrivateKey> generateKeyPair() {
   final publicKey = keyPair.publicKey as RSAPublicKey;
   final privateKey = keyPair.privateKey as RSAPrivateKey;
 
-  return keyPair;
+  return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(publicKey, privateKey);
 }
 
 AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> getEmptyKeyPair() {
@@ -48,7 +39,7 @@ class rsaGenPage extends StatefulWidget {
 
 class rsaGenPageState extends State<rsaGenPage> {
   final emptyKey = getEmptyKeyPair();
-  final userPair = generateKeyPair();
+  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
 
   @override
   Widget build(BuildContext context) {
@@ -102,25 +93,25 @@ class rsaGenPageState extends State<rsaGenPage> {
                           size: 28,
                         ),
                       ),
-                      userPair != emptyKey
-                          ? Text(
-                              "${userPair.privateKey}${userPair.privateKey}",
-                              style: const TextStyle(
-                                fontFamily: "Oxygen",
-                                fontSize: 16,
-                                letterSpacing: 1.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            )
-                          : const Text(
-                              "N/A",
-                              style: TextStyle(
-                                fontFamily: "Oxygen",
-                                fontSize: 16,
-                                letterSpacing: 1.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            )
+                      ElevatedButton(
+                        onPressed: userPair == emptyKey
+                            ? null
+                            : () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => hugeText(userPair, 0),
+                                  ),
+                                ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepOrangeAccent,
+                          disabledBackgroundColor: Colors.deepOrangeAccent[100],
+                        ),
+                        child: const Text("Click to See",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              color: Colors.white,
+                            )),
+                      )
                     ],
                   ),
                   const Text(
@@ -144,25 +135,24 @@ class rsaGenPageState extends State<rsaGenPage> {
                           size: 30,
                         ),
                       ),
-                      userPair != emptyKey
-                          ? Text(
-                              "${userPair.publicKey}${userPair.publicKey}",
-                              style: const TextStyle(
-                                fontFamily: "Oxygen",
-                                fontSize: 16,
-                                letterSpacing: 1.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            )
-                          : const Text(
-                              "N/A",
-                              style: TextStyle(
-                                fontFamily: "Oxygen",
-                                fontSize: 16,
-                                letterSpacing: 1.0,
-                              ),
-                              textAlign: TextAlign.center,
-                            )
+                      ElevatedButton(
+                        onPressed: userPair == emptyKey
+                            ? null
+                            : () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        hugeText(userPair, 1))),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepOrangeAccent,
+                          disabledBackgroundColor: Colors.deepOrangeAccent[100],
+                        ),
+                        child: const Text("Click to See",
+                            style: TextStyle(
+                              fontFamily: "Poppins",
+                              color: Colors.white,
+                            )),
+                      )
                     ],
                   ),
                 ],
@@ -180,7 +170,10 @@ class rsaGenPageState extends State<rsaGenPage> {
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 minimumSize: const Size(300, 1),
               ),
-              onPressed: () {},
+              onPressed: () {
+                userPair = generateKeyPair();
+                setState(() {});
+              },
             ),
           ]),
     );
