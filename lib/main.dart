@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/pages/ble.dart';
 import 'package:myapp/pages/rsa.dart';
+import 'package:myapp/pages/sign.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:pointycastle/export.dart' hide State, Padding;
 
-void main() => runApp(MaterialApp(
-      initialRoute: '/home',
-      routes: {
-        '/home': (context) => Home(
-              scanResultList: [],
-            ),
-        '/ble': (context) => blePage(
-              scanResultList: [],
-            ),
-        '/rsa': (context) => rsaGenPage(),
-      },
-    ));
+void main() => runApp(MaterialApp(initialRoute: '/home', routes: {
+      '/home': (context) => Home(
+            scanResultList: [],
+          ),
+    }));
 
 class Home extends StatelessWidget {
   List<ScanResult> scanResultList;
@@ -24,17 +19,10 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
+    Map scanData;
+    dynamic keyData;
     return Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('LabSEC Mobile Challenge',
-        //       style: TextStyle(
-        //         fontFamily: "Poppins",
-        //         fontWeight: FontWeight.bold,
-        //       )),
-        //   centerTitle: true,
-        //   backgroundColor: Colors.deepOrange,
-        //   elevation: 0,
-        // ),
         backgroundColor: Colors.grey[100],
         body: Center(
           child: Column(
@@ -48,7 +36,7 @@ class Home extends StatelessWidget {
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2.0,
-                      color: Colors.deepOrange,
+                      color: Colors.deepPurple,
                     )),
               ),
               Container(
@@ -61,12 +49,12 @@ class Home extends StatelessWidget {
                         fontSize: 16,
                       )),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrangeAccent,
+                    backgroundColor: Colors.deepPurpleAccent,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     minimumSize: const Size(300, 1),
                   ),
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    scanData = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => blePage(
@@ -75,6 +63,8 @@ class Home extends StatelessWidget {
                         ),
                       ),
                     );
+                    scanResultList = scanData['scanResultList'];
+                    lastScanned = scanData['lastScanned'];
                   },
                 ),
               ),
@@ -88,12 +78,20 @@ class Home extends StatelessWidget {
                         fontSize: 16,
                       )),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrangeAccent,
+                    backgroundColor: Colors.deepPurpleAccent,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     minimumSize: const Size(300, 1),
                   ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/rsa');
+                  onPressed: () async {
+                    keyData = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => rsaGenPage(
+                          userPair,
+                        ),
+                      ),
+                    );
+                    userPair = keyData;
                   },
                 ),
               ),
@@ -107,12 +105,19 @@ class Home extends StatelessWidget {
                         fontSize: 16,
                       )),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrangeAccent,
+                    backgroundColor: Colors.deepPurpleAccent,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     minimumSize: const Size(300, 1),
                   ),
-                  onPressed: () {
-                    print('clicked button!');
+                  onPressed: () async {
+                    String signature = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            signPage(scanResultList, userPair),
+                      ),
+                    );
+                    print(signature);
                   },
                 ),
               ),
@@ -126,7 +131,7 @@ class Home extends StatelessWidget {
                         fontSize: 16,
                       )),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrangeAccent,
+                    backgroundColor: Colors.deepPurpleAccent,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     minimumSize: const Size(300, 1),
                   ),

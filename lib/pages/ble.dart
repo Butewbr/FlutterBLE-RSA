@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:myapp/main.dart';
 
 class blePage extends StatefulWidget {
   List<ScanResult> scanResultList;
   String lastScanned;
-
-  static const routeName = '/extractArguments';
 
   blePage({required this.scanResultList, this.lastScanned = 'a'});
 
@@ -18,13 +15,7 @@ class blePage extends StatefulWidget {
 
 class _blePageState extends State<blePage> {
   FlutterBlue flutterBlue = FlutterBlue.instance;
-  // List<ScanResult> scanResultList = [];
   bool _isScanning = false;
-
-  Map data = {};
-
-  // String lastScanned = DateFormat('yyyy-MM-dd H:m:s')
-  //     .format(DateTime.parse('2021-07-13T13:15:54.000000Z'));
 
   @override
   initState() {
@@ -40,10 +31,8 @@ class _blePageState extends State<blePage> {
   }
 
   scan() async {
-    print(widget.lastScanned);
     widget.lastScanned =
         DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now());
-    print(widget.lastScanned);
     if (!_isScanning) {
       widget.scanResultList.clear();
       flutterBlue.startScan(timeout: const Duration(seconds: 4));
@@ -98,7 +87,7 @@ class _blePageState extends State<blePage> {
 
   Widget circleIcon(ScanResult r) {
     return const CircleAvatar(
-      backgroundColor: Colors.deepOrangeAccent,
+      backgroundColor: Colors.deepPurpleAccent,
       child: Icon(
         Icons.bluetooth_drive,
         color: Colors.white,
@@ -110,7 +99,7 @@ class _blePageState extends State<blePage> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       color: Colors.white,
-      shadowColor: Colors.deepOrangeAccent,
+      shadowColor: Colors.deepPurpleAccent,
       child: ListTile(
         leading: circleIcon(r),
         title: deviceName(r),
@@ -143,15 +132,13 @@ class _blePageState extends State<blePage> {
               fontWeight: FontWeight.bold,
             )),
         leading: BackButton(
-          onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Home(
-                      scanResultList: widget.scanResultList,
-                      lastScanned: widget.lastScanned))),
+          onPressed: () => Navigator.pop(context, {
+            'scanResultList': widget.scanResultList,
+            'lastScanned': widget.lastScanned
+          }),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepOrange,
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
       ),
       body: Column(
@@ -182,7 +169,7 @@ class _blePageState extends State<blePage> {
                               },
                               // separatorBuilder: (BuildContext context, int index) {
                               //   return Divider(
-                              //     color: Colors.deepOrange[100],
+                              //     color: Colors.deepPurple[100],
                               //     height: 0,
                               //   );
                               // },
@@ -195,7 +182,7 @@ class _blePageState extends State<blePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: scan,
-        backgroundColor: Colors.deepOrangeAccent,
+        backgroundColor: Colors.deepPurpleAccent,
         elevation: 4,
         child: Icon(
             _isScanning ? Icons.bluetooth_disabled : Icons.bluetooth_audio),
@@ -210,9 +197,9 @@ class ScanningWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-        child: SpinKitFadingCircle(
+        child: SpinKitFadingFour(
       size: 60,
-      color: Colors.deepOrangeAccent,
+      color: Colors.deepPurpleAccent,
       duration: Duration(seconds: 1),
     ));
   }

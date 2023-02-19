@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pointycastle/export.dart' hide State, Padding;
 import 'dart:convert';
-import 'dart:io';
 
 class hugeText extends StatelessWidget {
   final AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> thePair;
@@ -25,7 +24,7 @@ class hugeText extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               )),
           centerTitle: true,
-          backgroundColor: Colors.deepOrange,
+          backgroundColor: Colors.deepPurple,
           elevation: 0,
         ),
         body: Scrollbar(
