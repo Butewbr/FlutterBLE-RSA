@@ -7,12 +7,22 @@ import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart' hide State, Padding;
 import 'dart:convert';
+import 'package:myapp/provider/theme_provider.dart';
+import 'package:myapp/widget/theme_button.dart';
+import 'package:provider/provider.dart';
 
-void main() => runApp(MaterialApp(initialRoute: '/home', routes: {
-      '/home': (context) => Home(
-            scanResultList: [],
-          ),
-    }));
+void main() => runApp(ChangeNotifierProvider(
+    create: (_) => ThemeProvider(),
+    child: Consumer<ThemeProvider>(
+      builder: (context, notifier, child) => MaterialApp(
+          theme: notifier.isDarkMode ? MyThemes.darkTheme : MyThemes.lightTheme,
+          initialRoute: '/home',
+          routes: {
+            '/home': (context) => Home(
+                  scanResultList: [],
+                ),
+          }),
+    )));
 
 class Home extends StatefulWidget {
   List<ScanResult> scanResultList;
@@ -32,138 +42,145 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     Map scanData;
     dynamic keyData;
-    return Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 36),
-                child: const Text('App Challenge',
-                    style: TextStyle(
-                      fontFamily: "Poppins",
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2.0,
-                      color: Colors.deepPurple,
-                    )),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 18),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.bluetooth),
-                  label: const Text('BLE Devices',
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                      )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
-                  onPressed: () async {
-                    scanData = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => blePage(
-                          scanResultList: widget.scanResultList,
-                          lastScanned: widget.lastScanned,
-                        ),
-                      ),
-                    );
-                    widget.scanResultList = scanData['scanResultList'];
-                    widget.lastScanned = scanData['lastScanned'];
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 18),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.key),
-                  label: const Text('Generate RSA Key Pair',
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                      )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
-                  onPressed: () async {
-                    keyData = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => rsaGenPage(
-                          widget.userPair,
-                        ),
-                      ),
-                    );
-                    widget.userPair = keyData;
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 18),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.app_registration),
-                  label: const Text('Sign List',
-                      style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 16,
-                      )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
-                  onPressed: () async {
-                    signature = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => signPage(
-                            widget.scanResultList, widget.userPair, signature),
-                      ),
-                    );
-                    setState(() {});
 
-                    print(signature);
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 18),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.verified),
-                  label: const Text('Verify Signature',
+    return Scaffold(
+        // backgroundColor: Colors.grey[100],
+        appBar: AppBar(
+          title: const Text('Home',
+              style: TextStyle(
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.bold,
+              )),
+          centerTitle: true,
+          // backgroundColor: Colors.deepPurple,
+          elevation: 0,
+          actions: [
+            Consumer<ThemeProvider>(
+                builder: (context, notifier, child) =>
+                    const ChangeThemeButton()),
+          ],
+        ),
+        body: Center(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 36),
+                  child: Text('App Challenge',
                       style: TextStyle(
                         fontFamily: "Poppins",
-                        fontSize: 16,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0,
+                        color: Theme.of(context).primaryColor,
                       )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    disabledBackgroundColor: Colors.deepPurpleAccent[100],
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
-                  onPressed: base64.encode(signature) != ''
-                      ? () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => verifyPage(
-                                  widget.scanResultList,
-                                  widget.userPair,
-                                  signature),
-                            ),
-                          );
-                        }
-                      : null,
                 ),
-              ),
-            ],
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 18),
+                  child: ElevatedButton.icon(
+                    icon: const Icon(
+                      Icons.bluetooth,
+                      color: Colors.white,
+                    ),
+                    label: const Text('BLE Devices',
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 16,
+                          color: Colors.white,
+                        )),
+                    onPressed: () async {
+                      scanData = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => blePage(
+                            scanResultList: widget.scanResultList,
+                            lastScanned: widget.lastScanned,
+                          ),
+                        ),
+                      );
+                      widget.scanResultList = scanData['scanResultList'];
+                      widget.lastScanned = scanData['lastScanned'];
+                    },
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 18),
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.key, color: Colors.white),
+                    label: const Text('Generate RSA Key Pair',
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 16,
+                          color: Colors.white,
+                        )),
+                    onPressed: () async {
+                      keyData = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => rsaGenPage(
+                            widget.userPair,
+                          ),
+                        ),
+                      );
+                      widget.userPair = keyData;
+                    },
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 18),
+                  child: ElevatedButton.icon(
+                    icon:
+                        const Icon(Icons.app_registration, color: Colors.white),
+                    label: const Text('Sign List',
+                        style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 16,
+                            color: Colors.white)),
+                    onPressed: () async {
+                      signature = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => signPage(widget.scanResultList,
+                              widget.userPair, signature),
+                        ),
+                      );
+                      setState(() {});
+
+                      // print(signature);
+                    },
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 18),
+                  child: ElevatedButton.icon(
+                    icon: const Icon(
+                      Icons.verified,
+                      color: Colors.white,
+                    ),
+                    label: const Text('Verify Signature',
+                        style: TextStyle(
+                            fontFamily: "Poppins",
+                            fontSize: 16,
+                            color: Colors.white)),
+                    onPressed: base64.encode(signature) != '' &&
+                            widget.userPair != getEmptyKeyPair()
+                        ? () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => verifyPage(
+                                    widget.scanResultList,
+                                    widget.userPair,
+                                    signature),
+                              ),
+                            );
+                          }
+                        : null,
+                  ),
+                ),
+              ],
+            ),
           ),
         ));
   }

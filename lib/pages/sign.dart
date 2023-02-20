@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:myapp/pages/rsa.dart';
 import 'package:pointycastle/export.dart' as ptCastle hide State, Padding;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
+import 'package:myapp/widget/theme_button.dart';
 
 class signPage extends StatefulWidget {
   List<ScanResult> scanResultList;
@@ -21,7 +23,6 @@ class _signPageState extends State<signPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Sign List',
             style: TextStyle(
@@ -29,45 +30,60 @@ class _signPageState extends State<signPage> {
               fontWeight: FontWeight.bold,
             )),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: BackButton(
           onPressed: () => Navigator.pop(context, widget.signature),
         ),
+        actions: const [
+          ChangeThemeButton(),
+        ],
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Sign BLE Device List',
+            Text('Sign BLE Device List',
                 style: TextStyle(
                   fontFamily: "Poppins",
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2.0,
-                  color: Colors.deepPurple,
+                  color: Theme.of(context).primaryColor,
                 )),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.app_registration),
+                  icon: const Icon(
+                    Icons.app_registration,
+                    color: Colors.white,
+                  ),
                   label: const Text('Sign List',
                       style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 16,
+                        color: Colors.white,
                       )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
                   onPressed: () async {
-                    print("scan result: ${widget.scanResultList}");
-                    print(
-                        "pvkey modulus: ${widget.keyPair.privateKey.modulus}");
-                    print("pbkey modulus: ${widget.keyPair.publicKey.modulus}");
+                    // print("scan result: ${widget.scanResultList}");
+                    // print(
+                    //     "pvkey modulus: ${widget.keyPair.privateKey.modulus}");
+                    // print("pbkey modulus: ${widget.keyPair.publicKey.modulus}");
+
+                    if (widget.keyPair == getEmptyKeyPair()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            'Your key pair is empty!',
+                            style: TextStyle(color: Colors.white),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                      return;
+                    }
 
                     List<String> devicesID = [];
 
@@ -77,13 +93,13 @@ class _signPageState extends State<signPage> {
 
                     String jsonData = json.encode(devicesID);
 
-                    print("jsondata: $jsonData");
+                    // print("jsondata: $jsonData");
 
                     // Convert the JSON-encoded string to bytes
                     List<int> dataBytes = utf8.encode(jsonData);
-                    print("databytes: $dataBytes");
+                    // print("databytes: $dataBytes");
                     Uint8List uint8DataBytes = Uint8List.fromList(dataBytes);
-                    print("uint8databytes: $uint8DataBytes");
+                    // print("uint8databytes: $uint8DataBytes");
 
                     // Create a SHA-256 hash of the data
                     Digest hash = sha256.convert(uint8DataBytes);
@@ -99,31 +115,24 @@ class _signPageState extends State<signPage> {
                         .generateSignature(Uint8List.fromList(hash.bytes));
 
                     widget.signature = signature.bytes;
-                    // Uint8List signatureBytes = signature.bytes;
 
-                    // Convert the signature to a Base64-encoded string
-                    // widget.signature = base64.encode(signatureBytes);
-
-                    // print(widget.signature);
-
-                    // final verifier = ptCastle.RSASigner(
-                    //     ptCastle.SHA256Digest(), '0609608648016503040201');
-
-                    // verifier.init(
-                    //     false,
-                    //     ptCastle.PublicKeyParameter<ptCastle.RSAPublicKey>(
-                    //         widget.keyPair.publicKey));
-
-                    // print(verifier.verifySignature(
-                    //     Uint8List.fromList(hash.bytes),
-                    //     ptCastle.RSASignature(signatureBytes)));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text(
+                          'List Signed!',
+                          style: TextStyle(color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
 
                     setState(() {});
                   },
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: widget.signature != ''
+                  onPressed: base64.encode(widget.signature) != ''
                       ? () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -133,20 +142,15 @@ class _signPageState extends State<signPage> {
                       : null,
                   icon: const Icon(
                     Icons.remove_red_eye,
-                    // color: Colors.white,
+                    color: Colors.white,
                   ),
                   label: const Text('See Signature',
                       style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 16,
+                        color: Colors.white,
                         // color: Colors.white,
                       )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    disabledBackgroundColor: Colors.deepPurpleAccent[100],
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
                 ),
               ],
             )
@@ -165,7 +169,7 @@ class seeSignature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[100],
+        // backgroundColor: Colors.grey[100],
         appBar: AppBar(
           title: const Text('Generate RSA Key Pair',
               style: TextStyle(
@@ -173,8 +177,10 @@ class seeSignature extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               )),
           centerTitle: true,
-          backgroundColor: Colors.deepPurple,
           elevation: 0,
+          actions: const [
+            ChangeThemeButton(),
+          ],
         ),
         body: Scrollbar(
           thickness: 8,
@@ -185,7 +191,11 @@ class seeSignature extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Text(
                 base64.encode(signature),
-                style: const TextStyle(fontFamily: "Oxygen", fontSize: 13),
+                style: TextStyle(
+                  fontFamily: "Oxygen",
+                  fontSize: 13,
+                  color: Theme.of(context).primaryColorLight,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),

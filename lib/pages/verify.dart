@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:myapp/pages/sign.dart';
+import 'package:myapp/widget/theme_button.dart';
 
 class verifyPage extends StatefulWidget {
   List<ScanResult> scanResultList;
@@ -24,7 +25,7 @@ class _verifyPageState extends State<verifyPage> {
   Future<bool> verifySignature() async {
     List<String> devicesID = [];
 
-    print("MODULUS: ${widget.keyPair.publicKey.modulus}");
+    // print("MODULUS: ${widget.keyPair.publicKey.modulus}");
 
     for (ScanResult result in widget.scanResultList) {
       devicesID.add(result.device.id.toString());
@@ -32,13 +33,13 @@ class _verifyPageState extends State<verifyPage> {
 
     String jsonData = json.encode(devicesID);
 
-    print("jsondata: $jsonData");
+    // print("jsondata: $jsonData");
 
     // Convert the JSON-encoded string to bytes
     List<int> dataBytes = utf8.encode(jsonData);
-    print("databytes: $dataBytes");
+    // print("databytes: $dataBytes");
     Uint8List uint8DataBytes = Uint8List.fromList(dataBytes);
-    print("uint8databytes: $uint8DataBytes");
+    // print("uint8databytes: $uint8DataBytes");
 
     // Create a SHA-256 hash of the data
     Digest hash = sha256.convert(uint8DataBytes);
@@ -58,7 +59,7 @@ class _verifyPageState extends State<verifyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      // backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Verify a Signature',
             style: TextStyle(
@@ -66,11 +67,13 @@ class _verifyPageState extends State<verifyPage> {
               fontWeight: FontWeight.bold,
             )),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: BackButton(
           onPressed: () => Navigator.pop(context, widget.signature),
         ),
+        actions: const [
+          ChangeThemeButton(),
+        ],
       ),
       body: Center(
         child: Column(
@@ -78,13 +81,13 @@ class _verifyPageState extends State<verifyPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             !widget.verification && !widget.tried
-                ? const Text('Verify Signature',
+                ? Text('Verify Signature',
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2.0,
-                      color: Colors.deepPurple,
+                      color: Theme.of(context).primaryColor,
                     ))
                 : widget.verification
                     ? const Text("The Signature is Valid",
@@ -107,50 +110,44 @@ class _verifyPageState extends State<verifyPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton.icon(
-                  icon: const Icon(Icons.verified),
+                  icon: const Icon(
+                    Icons.verified,
+                    color: Colors.white,
+                  ),
                   label: const Text('Verify Signature',
                       style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 16,
+                        color: Colors.white,
                       )),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    minimumSize: const Size(300, 1),
-                  ),
                   onPressed: () async {
                     widget.verification = await verifySignature();
-                    print(widget.verification);
+                    // print(widget.verification);
                     widget.tried = true;
                     setState(() {});
                   },
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                    onPressed: widget.signature != ''
-                        ? () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  seeSignature(widget.signature),
-                            ))
-                        : null,
-                    icon: const Icon(
-                      Icons.remove_red_eye,
-                      // color: Colors.white,
-                    ),
-                    label: const Text('See Signature',
-                        style: TextStyle(
-                          fontFamily: "Poppins",
-                          fontSize: 16,
-                          // color: Colors.white,
-                        )),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurpleAccent,
-                      disabledBackgroundColor: Colors.deepPurpleAccent[100],
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      minimumSize: const Size(300, 1),
-                    ))
+                  onPressed: base64.encode(widget.signature) != ''
+                      ? () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                seeSignature(widget.signature),
+                          ))
+                      : null,
+                  icon: const Icon(
+                    Icons.remove_red_eye,
+                    color: Colors.white,
+                  ),
+                  label: const Text('See Signature',
+                      style: TextStyle(
+                        fontFamily: "Poppins",
+                        fontSize: 16,
+                        color: Colors.white,
+                      )),
+                )
               ],
             )
           ],

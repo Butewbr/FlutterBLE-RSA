@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:myapp/widget/theme_button.dart';
 
 class blePage extends StatefulWidget {
   List<ScanResult> scanResultList;
@@ -55,30 +56,33 @@ class _blePageState extends State<blePage> {
     }
     return Text(
       name,
-      style: const TextStyle(
+      style: TextStyle(
         fontFamily: "Oxygen",
+        color: Theme.of(context).primaryColorLight,
       ),
     );
   }
 
   Widget printLastScanned() {
     if (widget.lastScanned == 'a') {
-      return const Text(
+      return Text(
         "No Scan History",
         style: TextStyle(
           fontFamily: "Oxygen",
           fontSize: 16,
           letterSpacing: 1.0,
+          color: Theme.of(context).primaryColorLight,
         ),
         textAlign: TextAlign.center,
       );
     } else {
       return Text(
         "Last Scanned at:\n${widget.lastScanned}",
-        style: const TextStyle(
+        style: TextStyle(
           fontFamily: "Oxygen",
           fontSize: 16,
           letterSpacing: 1.0,
+          color: Theme.of(context).primaryColorLight,
         ),
         textAlign: TextAlign.center,
       );
@@ -98,22 +102,23 @@ class _blePageState extends State<blePage> {
   Widget deviceTemplate(ScanResult r) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      color: Colors.white,
+      // color: Colors.white,
       shadowColor: Colors.deepPurpleAccent,
       child: ListTile(
         leading: circleIcon(r),
         title: deviceName(r),
         subtitle: Text(
           "ID: ${r.device.id.id}",
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: "Oxygen",
+            color: Theme.of(context).primaryColorDark,
           ),
         ),
         trailing: Text(
           "RSSI:\n${r.rssi.toString()}",
           style: TextStyle(
             fontFamily: "Oxygen",
-            color: Colors.grey[700],
+            color: Theme.of(context).primaryColorDark,
           ),
           textAlign: TextAlign.center,
         ),
@@ -124,7 +129,7 @@ class _blePageState extends State<blePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      // backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Check BLE Devices',
             style: TextStyle(
@@ -138,8 +143,10 @@ class _blePageState extends State<blePage> {
           }),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
         elevation: 0,
+        actions: const [
+          ChangeThemeButton(),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -150,14 +157,15 @@ class _blePageState extends State<blePage> {
                   : SizedBox(
                       child: widget.scanResultList.isEmpty &&
                               widget.lastScanned != 'a'
-                          ? const Padding(
-                              padding: EdgeInsets.all(16),
+                          ? Padding(
+                              padding: const EdgeInsets.all(16),
                               child: Text(
                                 "No Devices Found",
                                 style: TextStyle(
                                   fontFamily: "Oxygen",
                                   fontSize: 18,
                                   letterSpacing: 1.0,
+                                  color: Theme.of(context).primaryColorLight,
                                 ),
                                 textAlign: TextAlign.center,
                               ))
@@ -185,7 +193,9 @@ class _blePageState extends State<blePage> {
         backgroundColor: Colors.deepPurpleAccent,
         elevation: 4,
         child: Icon(
-            _isScanning ? Icons.bluetooth_disabled : Icons.bluetooth_audio),
+          _isScanning ? Icons.bluetooth_disabled : Icons.bluetooth_audio,
+          color: Colors.white,
+        ),
       ),
     );
   }

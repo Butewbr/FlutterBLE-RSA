@@ -5,6 +5,7 @@ import 'package:pointycastle/export.dart' hide State, Padding;
 import 'package:myapp/pages/seekey.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:myapp/widget/theme_button.dart';
 
 AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> getEmptyKeyPair() {
   final emptyPublicKey = RSAPublicKey(BigInt.zero, BigInt.zero);
@@ -50,9 +51,9 @@ class rsaGenPageState extends State<rsaGenPage> {
   }
 
   Future loadingScreen(int size) async {
-    setState(() {
-      isGenerating = true;
-    });
+    // setState(() {
+    //   isGenerating = true;
+    // });
 
     await Future.delayed(const Duration(seconds: 1));
 
@@ -65,39 +66,52 @@ class rsaGenPageState extends State<rsaGenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      // backgroundColor: Colors.grey[100],
       appBar: AppBar(
-          title: const Text('Generate RSA Key Pair',
-              style: TextStyle(
-                fontFamily: "Poppins",
-                fontWeight: FontWeight.bold,
-              )),
-          centerTitle: true,
-          backgroundColor: Colors.deepPurple,
-          elevation: 0,
-          leading: BackButton(
-            onPressed: () => Navigator.pop(context, widget.userPair),
-          )),
+        title: const Text('Generate RSA Key Pair',
+            style: TextStyle(
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.bold,
+            )),
+        centerTitle: true,
+        elevation: 0,
+        leading: BackButton(
+          onPressed: () => Navigator.pop(context, widget.userPair),
+        ),
+        actions: const [
+          ChangeThemeButton(),
+        ],
+      ),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            widget.userPair == emptyKey
-                ? const Text('You have no keys yet',
+            isGenerating
+                ? Text('Generating Key Pair',
                     style: TextStyle(
                       fontFamily: "Poppins",
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2.0,
-                      color: Colors.deepPurple,
+                      color: Theme.of(context).primaryColor,
                     ))
-                : const Text('Your Keys:',
-                    style: TextStyle(
-                        fontFamily: "Poppins",
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2.0,
-                        color: Colors.deepPurple)),
+                : widget.userPair == emptyKey
+                    ? Text('You have no Keys',
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2.0,
+                          color: Theme.of(context).primaryColor,
+                        ))
+                    : Text('Your Keys:',
+                        style: TextStyle(
+                          fontFamily: "Poppins",
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2.0,
+                          color: Theme.of(context).primaryColor,
+                        )),
             isGenerating
                 ? const GeneratingWidget()
                 : Padding(
@@ -105,24 +119,25 @@ class rsaGenPageState extends State<rsaGenPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Private Key:",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             letterSpacing: 1.0,
+                            color: Theme.of(context).primaryColorLight,
                           ),
                           textAlign: TextAlign.left,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16),
                               child: Icon(
                                 Icons.vpn_key_outlined,
-                                color: Colors.deepPurple,
+                                color: Theme.of(context).primaryColor,
                                 size: 28,
                               ),
                             ),
@@ -137,36 +152,37 @@ class rsaGenPageState extends State<rsaGenPage> {
                                         ),
                                       ),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.deepPurpleAccent,
-                                disabledBackgroundColor:
-                                    Colors.deepPurpleAccent[100],
+                                minimumSize: const Size(1, 1),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 12),
                               ),
                               child: const Text("Click to See Your Private Key",
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    // color: Colors.white,
+                                    color: Colors.white,
                                   )),
                             )
                           ],
                         ),
-                        const Text(
+                        Text(
                           "Public Key:",
                           style: TextStyle(
                             fontFamily: "Poppins",
                             fontSize: 16,
                             letterSpacing: 1.0,
+                            color: Theme.of(context).primaryColorLight,
                           ),
                           textAlign: TextAlign.left,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16),
                               child: Icon(
                                 Icons.vpn_key,
-                                color: Colors.deepPurple,
+                                color: Theme.of(context).primaryColor,
                                 size: 30,
                               ),
                             ),
@@ -179,14 +195,13 @@ class rsaGenPageState extends State<rsaGenPage> {
                                           builder: (context) =>
                                               hugeText(widget.userPair, 1))),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.deepPurpleAccent,
-                                disabledBackgroundColor:
-                                    Colors.deepPurpleAccent[100],
-                              ),
+                                  minimumSize: const Size(1, 1),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 12)),
                               child: const Text("Click to See your Public Key",
                                   style: TextStyle(
                                     fontFamily: "Poppins",
-                                    // color: Colors.white,
+                                    color: Colors.white,
                                   )),
                             )
                           ],
@@ -195,16 +210,14 @@ class rsaGenPageState extends State<rsaGenPage> {
                     ),
                   ),
             ElevatedButton.icon(
-              icon: const Icon(Icons.generating_tokens),
+              icon: const Icon(Icons.generating_tokens, color: Colors.white),
               label: const Text('Generate New Pair',
                   style: TextStyle(
                     fontFamily: "Poppins",
                     fontSize: 16,
-                    // color: Colors.white,
+                    color: Colors.white,
                   )),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurpleAccent,
-                disabledBackgroundColor: Colors.deepPurpleAccent[100],
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 minimumSize: const Size(300, 1),
               ),
@@ -213,8 +226,12 @@ class rsaGenPageState extends State<rsaGenPage> {
                         keySize = await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => AskSizeWidget(),
+                              builder: (context) => const AskSizeWidget(),
                             )),
+                        setState(() {
+                          isGenerating = true;
+                        }),
+                        // await Future.delayed(const Duration(seconds: 1)),
                         loadingScreen(keySize),
                       }
                   : null,
@@ -245,21 +262,24 @@ class _AskSizeWidgetState extends State<AskSizeWidget> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text("Enter the Key Size:",
+              Text("Enter the Key Size:",
                   style: TextStyle(
                     fontFamily: "Oxygen",
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                     letterSpacing: 2.0,
-                    color: Colors.deepPurple,
+                    color: Theme.of(context).primaryColor,
                   )),
               const SizedBox(
                 height: 16,
               ),
               TextFormField(
+                style: TextStyle(color: Theme.of(context).primaryColorLight),
                 decoration: InputDecoration(
                   labelText: "Key Size",
-                  labelStyle: const TextStyle(color: Colors.deepPurple),
+                  labelStyle: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                  ),
                   border: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.deepPurpleAccent),
                   ),
@@ -272,8 +292,8 @@ class _AskSizeWidgetState extends State<AskSizeWidget> {
                   hintStyle: TextStyle(color: Colors.deepPurple[200]),
                 ),
                 validator: (value) {
-                  if (int.parse(value!) < 1024 || int.parse(value) > 16384) {
-                    return "Enter a value between 1024 and 16384";
+                  if (int.parse(value!) < 512 || int.parse(value) > 4096) {
+                    return "Enter a value between 512 and 4096";
                   } else {
                     return null;
                   }
@@ -297,12 +317,10 @@ class _AskSizeWidgetState extends State<AskSizeWidget> {
                       Navigator.pop(context, keySize);
                     }
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                  ),
                   child: const Text(
                     "Submit",
-                    style: TextStyle(fontFamily: "Poppins"),
+                    style:
+                        TextStyle(fontFamily: "Poppins", color: Colors.white),
                   )),
               const SizedBox(
                 height: 16,
@@ -311,18 +329,15 @@ class _AskSizeWidgetState extends State<AskSizeWidget> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurpleAccent,
-                  ),
                   child: const Text(
                     "Cancel",
-                    style: TextStyle(fontFamily: "Poppins"),
+                    style:
+                        TextStyle(fontFamily: "Poppins", color: Colors.white),
                   )),
             ],
           ),
         ),
       ),
-      backgroundColor: Colors.grey[100],
     );
   }
 }
