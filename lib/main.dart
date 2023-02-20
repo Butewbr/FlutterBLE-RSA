@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:myapp/pages/ble.dart';
 import 'package:myapp/pages/rsa.dart';
 import 'package:myapp/pages/sign.dart';
+import 'package:myapp/pages/verify.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'dart:typed_data';
 import 'package:pointycastle/export.dart' hide State, Padding;
+import 'dart:convert';
 
 void main() => runApp(MaterialApp(initialRoute: '/home', routes: {
       '/home': (context) => Home(
@@ -11,15 +14,22 @@ void main() => runApp(MaterialApp(initialRoute: '/home', routes: {
           ),
     }));
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   List<ScanResult> scanResultList;
+  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
   String lastScanned;
 
   Home({required this.scanResultList, this.lastScanned = 'a'});
 
   @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  Uint8List signature = Uint8List(0);
+
+  @override
   Widget build(BuildContext context) {
-    AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
     Map scanData;
     dynamic keyData;
     return Scaffold(
@@ -58,13 +68,13 @@ class Home extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => blePage(
-                          scanResultList: scanResultList,
-                          lastScanned: lastScanned,
+                          scanResultList: widget.scanResultList,
+                          lastScanned: widget.lastScanned,
                         ),
                       ),
                     );
-                    scanResultList = scanData['scanResultList'];
-                    lastScanned = scanData['lastScanned'];
+                    widget.scanResultList = scanData['scanResultList'];
+                    widget.lastScanned = scanData['lastScanned'];
                   },
                 ),
               ),
@@ -87,11 +97,11 @@ class Home extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => rsaGenPage(
-                          userPair,
+                          widget.userPair,
                         ),
                       ),
                     );
-                    userPair = keyData;
+                    widget.userPair = keyData;
                   },
                 ),
               ),
@@ -110,13 +120,15 @@ class Home extends StatelessWidget {
                     minimumSize: const Size(300, 1),
                   ),
                   onPressed: () async {
-                    String signature = await Navigator.push(
+                    signature = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            signPage(scanResultList, userPair),
+                        builder: (context) => signPage(
+                            widget.scanResultList, widget.userPair, signature),
                       ),
                     );
+                    setState(() {});
+
                     print(signature);
                   },
                 ),
@@ -132,12 +144,23 @@ class Home extends StatelessWidget {
                       )),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurpleAccent,
+                    disabledBackgroundColor: Colors.deepPurpleAccent[100],
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     minimumSize: const Size(300, 1),
                   ),
-                  onPressed: () {
-                    print('clicked button!');
-                  },
+                  onPressed: base64.encode(signature) != ''
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => verifyPage(
+                                  widget.scanResultList,
+                                  widget.userPair,
+                                  signature),
+                            ),
+                          );
+                        }
+                      : null,
                 ),
               ),
             ],

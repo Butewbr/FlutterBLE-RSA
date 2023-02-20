@@ -4,15 +4,14 @@ import 'package:pointycastle/export.dart' as ptCastle hide State, Padding;
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
-import 'package:myapp/pages/seekey.dart';
 
 class signPage extends StatefulWidget {
   List<ScanResult> scanResultList;
   ptCastle.AsymmetricKeyPair<ptCastle.RSAPublicKey, ptCastle.RSAPrivateKey>
       keyPair;
-  String signatureString = '';
+  Uint8List signature;
 
-  signPage(this.scanResultList, this.keyPair);
+  signPage(this.scanResultList, this.keyPair, this.signature);
 
   @override
   State<signPage> createState() => _signPageState();
@@ -24,7 +23,7 @@ class _signPageState extends State<signPage> {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Generate RSA Key Pair',
+        title: const Text('Sign List',
             style: TextStyle(
               fontFamily: "Poppins",
               fontWeight: FontWeight.bold,
@@ -33,7 +32,7 @@ class _signPageState extends State<signPage> {
         backgroundColor: Colors.deepPurple,
         elevation: 0,
         leading: BackButton(
-          onPressed: () => Navigator.pop(context, widget.signatureString),
+          onPressed: () => Navigator.pop(context, widget.signature),
         ),
       ),
       body: Center(
@@ -66,7 +65,9 @@ class _signPageState extends State<signPage> {
                   ),
                   onPressed: () async {
                     print("scan result: ${widget.scanResultList}");
-                    print("key pair: ${widget.keyPair}");
+                    print(
+                        "pvkey modulus: ${widget.keyPair.privateKey.modulus}");
+                    print("pbkey modulus: ${widget.keyPair.publicKey.modulus}");
 
                     List<String> devicesID = [];
 
@@ -96,35 +97,49 @@ class _signPageState extends State<signPage> {
                             widget.keyPair.privateKey));
                     ptCastle.RSASignature signature = signer
                         .generateSignature(Uint8List.fromList(hash.bytes));
-                    Uint8List signatureBytes = signature.bytes;
+
+                    widget.signature = signature.bytes;
+                    // Uint8List signatureBytes = signature.bytes;
 
                     // Convert the signature to a Base64-encoded string
-                    widget.signatureString = base64.encode(signatureBytes);
+                    // widget.signature = base64.encode(signatureBytes);
 
-                    print(widget.signatureString);
+                    // print(widget.signature);
+
+                    // final verifier = ptCastle.RSASigner(
+                    //     ptCastle.SHA256Digest(), '0609608648016503040201');
+
+                    // verifier.init(
+                    //     false,
+                    //     ptCastle.PublicKeyParameter<ptCastle.RSAPublicKey>(
+                    //         widget.keyPair.publicKey));
+
+                    // print(verifier.verifySignature(
+                    //     Uint8List.fromList(hash.bytes),
+                    //     ptCastle.RSASignature(signatureBytes)));
 
                     setState(() {});
                   },
                 ),
                 const SizedBox(height: 32),
                 ElevatedButton.icon(
-                  onPressed: widget.signatureString != ''
+                  onPressed: widget.signature != ''
                       ? () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                seeSignature(widget.signatureString),
+                                seeSignature(widget.signature),
                           ))
                       : null,
                   icon: const Icon(
                     Icons.remove_red_eye,
-                    color: Colors.white,
+                    // color: Colors.white,
                   ),
                   label: const Text('See Signature',
                       style: TextStyle(
                         fontFamily: "Poppins",
                         fontSize: 16,
-                        color: Colors.white,
+                        // color: Colors.white,
                       )),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepPurpleAccent,
@@ -143,7 +158,7 @@ class _signPageState extends State<signPage> {
 }
 
 class seeSignature extends StatelessWidget {
-  final String signature;
+  final Uint8List signature;
 
   const seeSignature(this.signature);
 
@@ -169,7 +184,7 @@ class seeSignature extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
               child: Text(
-                signature,
+                base64.encode(signature),
                 style: const TextStyle(fontFamily: "Oxygen", fontSize: 13),
                 textAlign: TextAlign.center,
               ),
