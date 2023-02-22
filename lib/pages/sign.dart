@@ -34,9 +34,6 @@ class _signPageState extends State<signPage> {
         leading: BackButton(
           onPressed: () => Navigator.pop(context, widget.signature),
         ),
-        actions: const [
-          ChangeThemeButton(),
-        ],
       ),
       body: Center(
         child: Column(
@@ -178,9 +175,6 @@ class seeSignature extends StatelessWidget {
               )),
           centerTitle: true,
           elevation: 0,
-          actions: const [
-            ChangeThemeButton(),
-          ],
         ),
         body: Scrollbar(
           thickness: 8,

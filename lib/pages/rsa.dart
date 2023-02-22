@@ -78,9 +78,6 @@ class rsaGenPageState extends State<rsaGenPage> {
         leading: BackButton(
           onPressed: () => Navigator.pop(context, widget.userPair),
         ),
-        actions: const [
-          ChangeThemeButton(),
-        ],
       ),
       body: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

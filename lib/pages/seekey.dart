@@ -26,9 +26,6 @@ class hugeText extends StatelessWidget {
               )),
           centerTitle: true,
           elevation: 0,
-          actions: const [
-            ChangeThemeButton(),
-          ],
         ),
         body: Scrollbar(
           thickness: 8,

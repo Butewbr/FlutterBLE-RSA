@@ -71,9 +71,6 @@ class _verifyPageState extends State<verifyPage> {
         leading: BackButton(
           onPressed: () => Navigator.pop(context, widget.signature),
         ),
-        actions: const [
-          ChangeThemeButton(),
-        ],
       ),
       body: Center(
         child: Column(

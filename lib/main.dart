@@ -18,24 +18,21 @@ void main() => runApp(ChangeNotifierProvider(
           theme: notifier.isDarkMode ? MyThemes.darkTheme : MyThemes.lightTheme,
           initialRoute: '/home',
           routes: {
-            '/home': (context) => Home(
-                  scanResultList: [],
-                ),
+            '/home': (context) => Home(),
           }),
     )));
 
 class Home extends StatefulWidget {
-  List<ScanResult> scanResultList;
-  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
-  String lastScanned;
-
-  Home({required this.scanResultList, this.lastScanned = 'a'});
+  Home();
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
+  List<ScanResult> scanResultList = [];
+  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> userPair = getEmptyKeyPair();
+  String lastScanned = 'a';
   Uint8List signature = Uint8List(0);
 
   @override
@@ -94,13 +91,13 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => blePage(
-                            scanResultList: widget.scanResultList,
-                            lastScanned: widget.lastScanned,
+                            scanResultList: scanResultList,
+                            lastScanned: lastScanned,
                           ),
                         ),
                       );
-                      widget.scanResultList = scanData['scanResultList'];
-                      widget.lastScanned = scanData['lastScanned'];
+                      scanResultList = scanData['scanResultList'];
+                      lastScanned = scanData['lastScanned'];
                     },
                   ),
                 ),
@@ -119,11 +116,11 @@ class _HomeState extends State<Home> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => rsaGenPage(
-                            widget.userPair,
+                            userPair,
                           ),
                         ),
                       );
-                      widget.userPair = keyData;
+                      userPair = keyData;
                     },
                   ),
                 ),
@@ -141,8 +138,8 @@ class _HomeState extends State<Home> {
                       signature = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => signPage(widget.scanResultList,
-                              widget.userPair, signature),
+                          builder: (context) =>
+                              signPage(scanResultList, userPair, signature),
                         ),
                       );
                       setState(() {});
@@ -164,15 +161,13 @@ class _HomeState extends State<Home> {
                             fontSize: 16,
                             color: Colors.white)),
                     onPressed: base64.encode(signature) != '' &&
-                            widget.userPair != getEmptyKeyPair()
+                            userPair != getEmptyKeyPair()
                         ? () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => verifyPage(
-                                    widget.scanResultList,
-                                    widget.userPair,
-                                    signature),
+                                    scanResultList, userPair, signature),
                               ),
                             );
                           }

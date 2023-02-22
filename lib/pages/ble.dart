@@ -8,7 +8,8 @@ class blePage extends StatefulWidget {
   List<ScanResult> scanResultList;
   String lastScanned;
 
-  blePage({required this.scanResultList, this.lastScanned = 'a'});
+  blePage({Key? key, required this.scanResultList, this.lastScanned = 'a'})
+      : super(key: key);
 
   @override
   _blePageState createState() => _blePageState();
@@ -144,9 +145,6 @@ class _blePageState extends State<blePage> {
         ),
         centerTitle: true,
         elevation: 0,
-        actions: const [
-          ChangeThemeButton(),
-        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

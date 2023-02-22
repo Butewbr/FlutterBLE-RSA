@@ -14,16 +14,6 @@ class ChangeThemeButton extends StatelessWidget {
         builder: (context, notifier, child) => IconButton(
             onPressed: () {
               themeProvider.toggleTheme();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  content: const Text(
-                    'All data were reset!',
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              );
             },
             icon: Icon(themeProvider.isDarkMode ? iconDark : iconLight)));
   }
