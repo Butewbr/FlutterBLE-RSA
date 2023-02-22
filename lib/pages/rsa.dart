@@ -277,16 +277,19 @@ class _AskSizeWidgetState extends State<AskSizeWidget> {
                   labelStyle: TextStyle(
                     color: Theme.of(context).primaryColor,
                   ),
-                  border: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurpleAccent),
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).secondaryHeaderColor),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.deepPurple[200]!),
+                    borderSide:
+                        BorderSide(color: Theme.of(context).disabledColor),
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.deepPurple)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor)),
                   hintText: '2048',
-                  hintStyle: TextStyle(color: Colors.deepPurple[200]),
+                  hintStyle: TextStyle(color: Theme.of(context).disabledColor),
                 ),
                 validator: (value) {
                   if (int.parse(value!) < 512 || int.parse(value) > 4096) {
@@ -344,11 +347,11 @@ class GeneratingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
         child: SpinKitFadingFour(
       size: 60,
-      color: Colors.deepPurpleAccent,
-      duration: Duration(seconds: 1),
+      color: Theme.of(context).secondaryHeaderColor,
+      duration: const Duration(seconds: 1),
     ));
   }
 }

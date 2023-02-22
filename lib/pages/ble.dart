@@ -91,9 +91,9 @@ class _blePageState extends State<blePage> {
   }
 
   Widget circleIcon(ScanResult r) {
-    return const CircleAvatar(
-      backgroundColor: Colors.deepPurpleAccent,
-      child: Icon(
+    return CircleAvatar(
+      backgroundColor: Theme.of(context).secondaryHeaderColor,
+      child: const Icon(
         Icons.bluetooth_drive,
         color: Colors.white,
       ),
@@ -104,7 +104,7 @@ class _blePageState extends State<blePage> {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       // color: Colors.white,
-      shadowColor: Colors.deepPurpleAccent,
+      shadowColor: Theme.of(context).primaryColor,
       child: ListTile(
         leading: circleIcon(r),
         title: deviceName(r),
@@ -188,7 +188,7 @@ class _blePageState extends State<blePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: scan,
-        backgroundColor: Colors.deepPurpleAccent,
+        // backgroundColor: Colors.deepPurpleAccent,
         elevation: 4,
         child: Icon(
           _isScanning ? Icons.bluetooth_disabled : Icons.bluetooth_audio,
@@ -204,11 +204,11 @@ class ScanningWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
         child: SpinKitFadingFour(
       size: 60,
-      color: Colors.deepPurpleAccent,
-      duration: Duration(seconds: 1),
+      color: Theme.of(context).secondaryHeaderColor,
+      duration: const Duration(seconds: 1),
     ));
   }
 }
