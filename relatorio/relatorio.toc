@@ -1,0 +1,14 @@
+\babel@toc {portuguese}{}\relax 
+\contentsline {section}{\numberline {1}Introdução}{2}{section.1}%
+\contentsline {section}{\numberline {2}Aprendizado Teórico}{3}{section.2}%
+\contentsline {section}{\numberline {3}Desenvolvimento}{4}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Tela 1: \textit {Home}}{4}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Tela 2: \textit {BLE Devices}}{4}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Tela 3: \textit {Generate RSA Key Pair}}{4}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Geração de Chaves}{5}{subsubsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.4}Tela 4: \textit {Sign List}}{5}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Assinatura}{5}{subsubsection.3.4.1}%
+\contentsline {subsection}{\numberline {3.5}Tela 5: \textit {Verify Signature}}{5}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}Verificação}{5}{subsubsection.3.5.1}%
+\contentsline {subsection}{\numberline {3.6}Temas}{6}{subsection.3.6}%
+\contentsline {section}{\numberline {4}Como Testar o Aplicativo}{6}{section.4}%

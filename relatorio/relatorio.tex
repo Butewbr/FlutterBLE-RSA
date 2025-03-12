@@ -1,0 +1,183 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{graphicx}
+\usepackage[
+top=3cm,
+bottom=2cm,
+left=3cm,
+right=2cm,
+]{geometry}
+\usepackage{pdfpages}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{textcomp}
+\usepackage[portuguese]{babel}
+\usepackage[section]{placeins}
+
+\usepackage{fancyhdr}
+\usepackage{lipsum}
+% Turn on the style
+\pagestyle{fancy}
+
+
+\fancyfoot{}
+
+\fancyfoot[R]{\thepage}
+\setlength{\headheight}{16pt}% ...at least 51.60004pt
+
+\definecolor{codegreen}{rgb}{0,0.5,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.5,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.9}
+
+\lstdefinestyle{codestyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{codepurple},
+    numberstyle=\tiny\color{codegreen},
+    stringstyle=\color{codegreen},
+   	showspaces=false,
+    basicstyle=\ttfamily,
+	numbers=left,
+    }
+
+\lstset{
+inputencoding=utf8,
+upquote=true,
+emph=[1]{var, String, int, List},% Insert here the types you are using
+emphstyle=[1]{\color{codepurple}},
+% Functions
+emph=[2]{encode, decode},% Insert here the methods you are using
+emphstyle=[2]{\color{codegreen}},%
+style=codestyle,
+    literate=%
+    {á}{{\'a}}1
+    {č}{{\v{c}}}1
+    {ď}{{\v{d}}}1
+    {é}{{\'e}}1
+    {ě}{{\v{e}}}1
+    {í}{{\'i}}1
+    {ň}{{\v{n}}}1
+    {ó}{{\'o}}1
+    {ř}{{\v{r}}}1
+    {š}{{\v{s}}}1
+    {ť}{{\v{t}}}1
+    {ú}{{\'u}}1
+    {ů}{{\r{u}}}1
+    {ý}{{\'y}}1
+    {ž}{{\v{z}}}1
+    {Á}{{\'A}}1
+    {Č}{{\v{C}}}1
+    {Ď}{{\v{D}}}1
+    {É}{{\'E}}1
+    {Ě}{{\v{E}}}1
+    {Í}{{\'I}}1
+    {Ň}{{\v{N}}}1
+    {Ó}{{\'O}}1
+    {Ř}{{\v{R}}}1
+    {Š}{{\v{S}}}1
+    {Ť}{{\v{T}}}1
+    {Ú}{{\'U}}1
+    {Ů}{{\r{U}}}1
+    {Ý}{{\'Y}}1
+    {Ž}{{\v{Z}}}1    
+    }
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\hypersetup{
+    colorlinks,
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=blue
+}
+
+
+\author{Bernardo Pandolfi Costa}
+\title{Relatório: Flutter RSA App}
+
+\renewcommand{\contentsname}{Sumário}
+\renewcommand{\figurename}{Figura}
+
+
+\begin{document}
+\begin{titlepage}
+    \begin{center}
+    \includegraphics[width=64px]{./assets/vertical_sigla_fundo_claro.png}\\
+        \small
+        \vspace{0.25cm}
+        \textbf{UNIVERSIDADE FEDERAL DE SANTA CATARINA}\\
+		\textbf{CENTRO DE CIÊNCIAS, TECNOLOGIAS E SAÚDE}\\
+		\textbf{DEPARTAMENTO DE COMPUTAÇÃO}\\
+		\textbf{CURSO DE ENGENHARIA DE COMPUTAÇÃO}\\
+        \vspace{7cm}
+        \Large
+        \textbf{Relatório: Flutter RSA App}\\
+        \vspace{0.5cm}
+        \normalsize
+        \textbf{Bernardo Pandolfi Costa }\\
+        \vspace{1.5cm}
+        \small
+        \vfill
+        Araranguá\\
+        \today
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+
+\newpage
+
+\section{Introdução}
+Este documento tem como objetivo apresentar os principais aspectos do desenvolvimento do aplicativo, descrevendo etapas percorridas, metodologias e problemas encontrados no desafio proposto pelo processo seletivo do LabSEC 2023 - \textit{Aplicativo Mobile em Flutter}. O relatório apresentará imagens do aplicativo em funcionamento para uma melhor visualização.
+\newpage
+\section{Aprendizado Teórico}
+
+Antes de iniciar o desenvolvimento da aplicação, precisei estudar sobre os assuntos tratados no desafio que não conhecia ou era inexperiente. Investi o período inicial do desafio apenas estudando o funcionamento e a teoria por trás do sistema de criptografia RSA: como foi criado, como é usado, porquê funciona, etc. Através de alguns artigos e vídeos, fui capaz de entender o suficiente para prosseguir ao próximo passo.\\
+Na sequência, estudei sobre a relação do sistema RSA com as assinaturas digitais, ou seja, como a criptografia RSA é aplicada para assinatura de documentos online. Com isso, o primeiro dia do período do desafio foi inteiramente dedicado ao aprendizado teórico.
+\newpage
+\section{Desenvolvimento}
+A verdadeira dificuldade do desafio começa aqui. Como eu não possuia experiência prévia com a tecnologia Flutter, precisei investir mais tempo para aprender o básico, de forma que o desenvolvimento do aplicativo final começou dias depois da data em que o desafio foi proposto.
+\subsection{Tela 1: \textit{Home}}
+Ainda não muito acostumado com flutter, decidi começar a fazer as telas do aplicativo, aprimorando meu conhecimento na prática. Comecei com a \textit{Tela 1}, responsável pela navegação principal no aplicativo. Esta é a tela que mostra os botões para que o usuário possa navegar pelas outras interfaces.\\
+Para desenvolvê-la, apenas elementos básicos de Flutter foram utilizados, como \textit{ElevatedButtons}, \textit{Containers} e a \textit{AppBar}, junto com suas respectivas estilizações.
+\subsection{Tela 2: \textit{BLE Devices}}
+Esta é a tela em que a busca por dispositivos BLE acontece. Para o escaneamento, utilizei a biblioteca \href{https://pub.dev/packages/flutter\_blue}{flutter\_blue}, recomendada no próprio documento do desafio. Executar a busca em si foi fácil, porém estilizar a lista encontrada foi um pouco mais complexo, sendo necessária a criação de alguns templates, \textit{ListViews}, \textit{Cards}, dentre outros \textit{widgets}. Sempre que uma nova busca é feita, a lista de dispositivos é atualizada no programa e é salva. Um escaneamento novo substituirá a lista antiga.\\
+Para marcar o horário e data da busca mais recente, utilizei o pacote \textit{intl}, específico para lidar com o tipo de dado \textit{DateTime}. Assim, sempre que o \textit{floatingActionButton} for acionado, a função \textit{scan()} é chamada, a informação de data é salva em uma variável com o horário da busca, através da função \textit{now()}.\\
+Enquanto uma busca é feita, uma tela de carregamento toma lugar do campo de resultado, até que a busca seja concluída. Caso o usuário queira cancelar a busca, pode interrompê-lo clicando novamente no botão flutuante no canto inferior direito. Isso não salva uma lista nula no aplicativo, mas sim uma lista com os dispositivos encontrados até o momento da interrupção.
+\subsection{Tela 3: \textit{Generate RSA Key Pair}}
+Nesta tela, o usuário pode gerar o par de chaves RSA, usado futuramente na assinatura. Para gerar o par de chaves RSA, utilizei uma biblioteca chamada \href{https://pub.dev/packages/pointycastle}{Pointy Castle}, específica para algoritmos de criptografia. Tal pacote possui  funcionalidades para a geração de chaves, assinatura e verificação.\\
+Quando o botão \textit{Generate New Pair} é pressionado, o usuário é confrontado por uma tela de \textit{input}, onde ele indica o tamanho de bits da chave. Os tamanhos aceitos estão entre 512 e 4096.\\
+É importante destacar que o tempo para gerar o par de chaves varia muito conforme a capacidade do dispositivo, bem como do tamanho de chave selecionado por ele.
+\subsubsection{Geração de Chaves}
+Para gerar o par de chaves, é preciso obter um um gerador de números aleatórios. Usei a função \textit{FortunaRandom()}, disponibilizada pela biblioteca \href{https://pub.dev/packages/pointycastle}{Pointy Castle}, para obtê-lo. Em seguida, deve-se instanciar um objeto do tipo \textit{RSAKeyGenerator} e inicializá-lo. Enfim, podemos invocar o método \textit{generateKeyPair}.
+\subsection{Tela 4: \textit{Sign List}}
+Nesta página, o usuário pode assinar a lista de dispositivos BLE detectados usando o par de chaves gerado anteriormente.
+\subsubsection{Assinatura}
+A fim de assinar a lista, o programa começa extraindo os IDs, objetos do tipo \textit{DeviceIdentifier}, dos dispositivos e transformando-os em \textit{Strings}, formando uma segunda lista apenas com os IDs. Em seguida, esta é convertida do tipo \textit{List} para \textit{String} através de um método \textit{json.encode()}, da biblioteca \href{https://api.flutter.dev/flutter/dart-convert/dart-convert-library.html}{convert}.\\
+Exemplo de funcionamento do método \textit{json.encode()}:
+\begin{lstlisting}[language=java]
+var encoded = json.encode([1, 2, { "a": null }]);
+var decoded = json.decode('["foo", { "bar": 499 }]');
+\end{lstlisting}
+Com essa conversão, é possível tratar a nossa lista de dispositivos como uma \textit{String}. O próximo passo é computar o hash dos dados. Isso é feito convertendo nossos dados com o método \textit{sha256.convert()}. Em seguida, é preciso inicializar o \textit{RSASigner}, indicando a chave privada e o algoritmo de \textit{Digest} que será usado. Por fim, o método \textit{generateSignature}, da biblioteca \href{https://pub.dev/packages/pointycastle}{Pointy Castle}, é invocado no objeto \textit{RSASigner}.\\
+O usuário pode visualizar uma representação na base 64 da assinatura pressionando o botão "See Signature"\, da página.
+\subsection{Tela 5: \textit{Verify Signature}}
+Na última tela, o usuário poderá verificar se a assinatura é, ou não, válida. Para fazer o teste de verificação, a aplicação usa a última lista de dispositivos escaneados, o último par de chaves gerados e a última assinatura feita.
+\subsubsection{Verificação}
+Os passos para verificação são bem parecidos com os feitos para a assinatura. É preciso converter os dados da mesma forma que antes, porém, ao invés de inicializarmos o \textit{RSASigner} com a chave privada, inicializamos com a chave pública. No fim, chama-se o método \textit{verifySignature}, no lugar do \textit{GenerateSignature}. Esse método retornará um \textit{booleano}: se a assinatura é válida, retorna \textit{true}, caso contrário, \textit{false}.
+\newpage
+\subsection{Temas}
+Terminadas as funções principais, decidi tentar adicionar uma função de temas, escuro e claro, no tempo restante. Pude implementá-lo utilizando o pacote \href{https://pub.dev/packages/provider}{Provider} para carregar as informações do tema com o \textit{ChangeNotifier}.
+\section{Como Testar o Aplicativo}
+\begin{enumerate}
+\item Baixe o código fonte .zip disponibilizado
+\item Extraia o conteúdo do arquivo em um diretório vazio
+\item Abra o terminal no diretório 'myapp'
+\item Execute o comando \lstinline{flutter run} no terminal
+\end{enumerate}
+\end{document}
