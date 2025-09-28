@@ -1,4 +1,4 @@
-# BLE Device Scanner + Digitally Signed List Generator
+# BLE Device Scanner + Digitally Signature
 
 This project was developed as part of a **selection challenge for the Laboratory of Computer Security (LabSEC)**.
 
