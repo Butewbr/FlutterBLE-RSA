@@ -1,16 +1,5 @@
-# myapp
+# BLE Device Scanner + Digitally Signed List Generator
 
-A new Flutter project.
+This project was developed as part of a **selection challenge for the Laboratory of Computer Security (LabSEC)**.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+The mobile app scans for BLE devices and creates a list containing the devices found. In the app, you can create a public/private key pair to digitally sign the list. You can see the keys and the resulting signature.
